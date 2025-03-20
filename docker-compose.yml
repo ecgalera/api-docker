@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mynetwork
+
+  api:
+    image: sha256:91305603428cda5efee16e29e7e857b47328bee1713d1d1aa13448665f7e96e5
+    container_name: modest_albattani
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: mydatabase
+      PORT: 3000
+      MONGODB_URI: mongodb+srv://galeraeduardo:databasepassword@clusterapi.tvahl.mongodb.net/?retryWrites=true&w=majority&appName=ClusterAPI
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+volumes:
+  mysql_data:
+
+networks:
+  mynetwork:
